@@ -20,8 +20,15 @@
 </section>
 
 <section>
+    <h2>Find Employee</h2>
+    <input type="number" id="searchId" placeholder="Employee ID">
+    <button onclick="findEmployeeById()">Find Employee</button>
+    <button onclick="loadEmployees()">Show All Employees</button>
+</section>
+
+<section>
     <h2>Employees</h2>
-    <button onclick="loadEmployees()">Refresh</button>
+    <button onclick="clearTable()">Refresh</button>
 
     <table>
         <thead>
@@ -37,6 +44,7 @@
         <tbody id="employeesTable"></tbody>
     </table>
 </section>
+
 
 <script src="app.js"></script>
 </body>
