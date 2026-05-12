@@ -62,6 +62,57 @@ document.getElementById("employeeForm").addEventListener("submit", async functio
     //loadEmployees();
 });
 
+document.getElementById("salaryForm").addEventListener("submit", async function(event){
+    event.preventDefault();
+    const id = document.getElementById("id").value;
+
+        if (!id) {
+            alert("Please enter an employee ID.");
+            return;
+        }
+
+        const response = await fetch(`${API_URL}/${id}`);
+
+        if (response.status === 404) {
+            alert("Employee not found.");
+            return;
+        }
+
+        const employee = await response.json();
+
+    const salaryUpdate={
+    salary: parseFloat(document.getElementById("newSalary").value)
+    };
+    await fetch(`${API_URL}/${id}/salary`,{
+    method: "PUT",
+    headers: {
+                "Content-Type": "application/json"
+            },
+    body: JSON.stringify(salaryUpdate)
+    });
+     document.getElementById("salaryForm").reset();
+        const table = document.getElementById("employeesTable");
+        table.innerHTML = "";
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${id}</td>
+            <td>${employee.name}</td>
+            <td>${employee.lastname}</td>
+            <td>${employee.dob}</td>
+            <td>${salaryUpdate.salary}</td>
+            <td></td>
+        `;
+
+        table.appendChild(row);
+        //loadEmployees();
+});
+
+
+
+
+
 async function deleteEmployee(id) {
     await fetch(`${API_URL}/${id}`, {
         method: "DELETE"
