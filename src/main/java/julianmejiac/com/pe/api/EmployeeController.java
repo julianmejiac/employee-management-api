@@ -37,15 +37,13 @@ public class EmployeeController {
         }
     }
     @PostMapping
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee){
-        try{
-            DaoEmployees dao=DaoEmployees.getInstance();
-            dao.insert(employee);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Employee created succesfully.");
-
-        } catch (SQLException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating employee");
-
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        try {
+            DaoEmployees dao = DaoEmployees.getInstance();
+            Employee createdEmployee = dao.insert(employee);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     @PutMapping("/{id}/salary")

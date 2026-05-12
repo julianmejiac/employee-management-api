@@ -16,15 +16,14 @@ async function loadEmployees() {
             <td>${employee.lastname}</td>
             <td>${employee.dob}</td>
             <td>${employee.salary}</td>
-            <td>
-                <button onclick="deleteEmployee(${employee.id})">Delete</button>
-            </td>
+
         `;
 
         table.appendChild(row);
     });
 }
 
+//Adding an Employee
 document.getElementById("employeeForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
@@ -35,13 +34,15 @@ document.getElementById("employeeForm").addEventListener("submit", async functio
         salary: parseFloat(document.getElementById("salary").value)
     };
 
-    await fetch(API_URL, {
+    const response=await fetch(API_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(employee)
     });
+    const createdEmployee = await response.json();
+
 
     document.getElementById("employeeForm").reset();
     const table = document.getElementById("employeesTable");
@@ -50,12 +51,12 @@ document.getElementById("employeeForm").addEventListener("submit", async functio
     const row = document.createElement("tr");
 
     row.innerHTML = `
-        <td>NEW</td>
+        <td>${createdEmployee.id}</td>
         <td>${employee.name}</td>
         <td>${employee.lastname}</td>
         <td>${employee.dob}</td>
         <td>${employee.salary}</td>
-        <td></td>
+
     `;
 
     table.appendChild(row);
@@ -102,7 +103,7 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
             <td>${employee.lastname}</td>
             <td>${employee.dob}</td>
             <td>${salaryUpdate.salary}</td>
-            <td></td>
+
         `;
 
         table.appendChild(row);
@@ -111,15 +112,48 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
 
 
 
+document.getElementById("deleteForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
 
+    const id = document.getElementById("deleteId").value;
+
+    const response = await fetch(`${API_URL}/${id}`);
+
+    if (response.status === 404) {
+        alert("Employee not found.");
+        return;
+    }
+
+    const employee = await response.json();
+
+    const confirmed = confirm(
+        `Do you want to delete employee ${employee.name} ${employee.lastname}?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const deleteResponse = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
+
+    if (deleteResponse.status === 200) {
+        alert("Employee deleted successfully.");
+        clearTable();
+    } else {
+        alert("Error deleting employee.");
+    }
+
+    document.getElementById("deleteForm").reset();
+});
 
 async function deleteEmployee(id) {
     await fetch(`${API_URL}/${id}`, {
         method: "DELETE"
     });
 
-    loadEmployees();
-}
+ }
 async function findEmployeeById() {
     const id = document.getElementById("searchId").value;
 
@@ -148,9 +182,7 @@ async function findEmployeeById() {
         <td>${employee.lastname}</td>
         <td>${employee.dob}</td>
         <td>${employee.salary}</td>
-        <td>
-            <button onclick="deleteEmployee(${employee.id})">Delete</button>
-        </td>
+
     `;
 
     table.appendChild(row);

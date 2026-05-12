@@ -1,10 +1,6 @@
 package julianmejiac.com.pe.api;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,16 +19,22 @@ public class DaoEmployees {
 		return instance;
 	}
 	//own methods from DAO class
-	public void insert(Employee e) throws SQLException{
+	public Employee insert(Employee e) throws SQLException{
 		PreparedStatement ps=con.prepareStatement(
 				"INSERT INTO empleado (nombre,apellido, fechaNacimiento,sueldo)"
-				+"VALUES(?,?,?,?)");
+				+"VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, e.getName());
 				ps.setString(2, e.getLastname());
 				ps.setDate(3, Date.valueOf(e.getDob()));
 				ps.setFloat(4, e.getSalary());
 				ps.executeUpdate();
+				ResultSet generatedKeys=ps.getGeneratedKeys();
+				if(generatedKeys.next()){
+					e.setId(generatedKeys.getInt(1));
+				}
+				generatedKeys.close();
 				ps.close();
+				return e;
 							
 				
 	}
