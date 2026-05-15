@@ -4,6 +4,22 @@ This project is a small full-stack employee management application built with Sp
 
 It supports CRUD operations for employee records and includes basic role-based protection for admin actions.
 
+## Screenshots
+
+### Main Dashboard
+<img width="2216" height="1294" alt="image" src="https://github.com/user-attachments/assets/9b25684d-b62a-4165-8156-09636adef44d" />
+### Search Employee by ID
+<img width="2217" height="1112" alt="image" src="https://github.com/user-attachments/assets/15d39ca8-2480-423e-9e30-e2a84fa58fb4" />
+### Add Employee 
+<img width="2221" height="296" alt="image" src="https://github.com/user-attachments/assets/2b74dd10-58a2-4cb5-a2a6-bb70cc9092ed" />
+<img width="2212" height="317" alt="image" src="https://github.com/user-attachments/assets/35548634-1861-450a-bb65-717141863fb8" />
+### Update Salary
+<img width="2225" height="169" alt="image" src="https://github.com/user-attachments/assets/cf9f2b86-b4fd-4b0c-8888-bfaecedf5730" />
+<img width="2217" height="146" alt="image" src="https://github.com/user-attachments/assets/b7657a22-7078-4454-a062-6ce3d35ec6ed" />
+### Security/Authentication
+<img width="2231" height="307" alt="image" src="https://github.com/user-attachments/assets/e9103651-a59a-4118-8efe-98b3e088a5d6" />
+<img width="2215" height="303" alt="image" src="https://github.com/user-attachments/assets/44802d29-61ad-444a-a826-afd1c38ed8f4" />
+
 ## Features
 
 - View all employees
