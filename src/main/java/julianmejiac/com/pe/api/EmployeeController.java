@@ -36,13 +36,30 @@ public class EmployeeController {
         }
     }
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<?> createEmployee(@RequestBody Employee employee) {
         try {
             DaoEmployees dao = DaoEmployees.getInstance();
+            if (employee.getName() == null || employee.getName().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Name is required.");
+            }
+            if (employee.getLastname()==null || employee.getLastname().trim().isEmpty()){
+                return ResponseEntity.badRequest().body("Last Name is required.");
+            }
+            if (employee.getDob()==null){
+                return ResponseEntity.badRequest().body("Date of Birth is required");
+            }
+            if (employee.getSalary()<=0){
+                return ResponseEntity.badRequest().body("Salary has to be positive");
+            }
+            if (employee.getSalary()>=1000000){
+                return ResponseEntity.badRequest().body("Salary is too high");
+            }
             Employee createdEmployee = dao.insert(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace();
+            //TODO: Replace printStackTrace() with proper Logger implementation
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database operation failed");
         }
     }
     @PutMapping("/{id}/salary")

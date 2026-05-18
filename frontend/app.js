@@ -56,7 +56,9 @@ document.getElementById("employeeForm").addEventListener("submit", async functio
     });
 
     if (!response.ok) {
-        alert("Create failed. Status: " + response.status);
+        const errorMessage=await response.text();
+
+        alert(errorMessage || "Create failed. Status: " + response.status);
         return;
     }
 
