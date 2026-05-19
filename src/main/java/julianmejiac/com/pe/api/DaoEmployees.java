@@ -96,9 +96,9 @@ public class DaoEmployees {
  
             ps.setInt(1, id);
  
-            int filasAfectadas = ps.executeUpdate();
+            int affectedRows= ps.executeUpdate();
  
-            return filasAfectadas > 0;
+            return affectedRows > 0;
         }
     }
     

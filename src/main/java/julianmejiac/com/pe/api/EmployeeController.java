@@ -38,7 +38,7 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<?> createEmployee(@RequestBody Employee employee) {
         try {
-            DaoEmployees dao = DaoEmployees.getInstance();
+
             if (employee.getName() == null || employee.getName().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Name is required.");
             }
@@ -54,6 +54,7 @@ public class EmployeeController {
             if (employee.getSalary()>=1000000){
                 return ResponseEntity.badRequest().body("Salary is too high");
             }
+            DaoEmployees dao = DaoEmployees.getInstance();
             Employee createdEmployee = dao.insert(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
         } catch (SQLException e) {
@@ -63,31 +64,39 @@ public class EmployeeController {
         }
     }
     @PutMapping("/{id}/salary")
-    public ResponseEntity<String> updateSalary (@PathVariable int id,@RequestBody Map<String,Float> body){
+    public ResponseEntity<?> updateSalary(@PathVariable int id, @RequestBody Map<String,Float> body){
         try{
             DaoEmployees dao=DaoEmployees.getInstance();
             Employee employee=dao.findById(id);
             if (employee==null){
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found");
             }
             Float newSalary=body.get("salary");
+            if (newSalary==null){
+                return ResponseEntity.badRequest().body("Need to introduce new salary");
+            }
+            if (newSalary<=0){
+                return ResponseEntity.badRequest().body("New salary has to be positive");
+            }
             dao.editSalary(employee,newSalary);
-            return ResponseEntity.ok("Salary updated succesfully.");
+            return ResponseEntity.ok("Salary updated successfully.");
         }catch(SQLException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating salary");
+            e.printStackTrace();//TODO replace using Logger
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database operation failed");
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable int id){
+    public ResponseEntity<?> deleteEmployee(@PathVariable int id){
         try{
             DaoEmployees dao= DaoEmployees.getInstance();
             boolean deleted=dao.deleteById(id);
             if(!deleted){
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee id not found");
             }
             return ResponseEntity.ok("Employee deleted succesfully");
         }catch(SQLException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting employee");
+            e.printStackTrace();//TODO replace with Looger
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database operation failed");
 
         }
     }

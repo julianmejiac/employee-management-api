@@ -1,12 +1,11 @@
 const API_URL = "http://localhost:8085/employees";
-
 function getAuthHeader() {
     const username = prompt("Admin username");
     const password = prompt("Admin password");
 
     return "Basic " + btoa(username + ":" + password);
 }
-
+//Show Employees
 async function loadEmployees() {
     const response = await fetch(API_URL);
 
@@ -38,12 +37,20 @@ async function loadEmployees() {
 // Adding an Employee
 document.getElementById("employeeForm").addEventListener("submit", async function(event) {
     event.preventDefault();
+     const name=document.getElementById("name").value;
+     const lastname=document.getElementById("lastname").value;
+     const dob=document.getElementById("dob").value;
+     const salary=parseFloat(document.getElementById("salary").value);
 
+    if (salary<=0){
+    alert("Salary must be positive");
+    return;
+    }
     const employee = {
-        name: document.getElementById("name").value,
-        lastname: document.getElementById("lastname").value,
-        dob: document.getElementById("dob").value,
-        salary: parseFloat(document.getElementById("salary").value)
+        name: name,
+        lastname: lastname,
+        dob: dob,
+        salary: salary
     };
 
     const response = await fetch(API_URL, {
@@ -87,6 +94,11 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
     event.preventDefault();
 
     const id = document.getElementById("id").value;
+    const newSalary=document.getElementById("newSalary").value;
+    if (newSalary<=0){
+        alert("New salary must be positive");
+        return;
+    }
 
     if (!id) {
         alert("Please enter an employee ID.");
@@ -101,12 +113,13 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
     }
 
     if (!response.ok) {
-        alert("Could not retrieve employee. Status: " + response.status);
+        const errorMessage= await response.text();
+        alert(errorMessage||"Could not retrieve employee. Status: " + response.status);
         return;
     }
 
     const salaryUpdate = {
-        salary: parseFloat(document.getElementById("newSalary").value)
+        salary: parseFloat(newSalary)
     };
 
     const updateResponse = await fetch(`${API_URL}/${id}/salary`, {
@@ -119,7 +132,8 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
     });
 
     if (!updateResponse.ok) {
-        alert("Update failed. Status: " + updateResponse.status);
+        const errorMessage=await updateResponse.text();
+        alert(errorMessage || "Update failed. Status: " + updateResponse.status);
         return;
     }
 
