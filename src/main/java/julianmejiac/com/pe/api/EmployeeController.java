@@ -21,18 +21,19 @@ public class EmployeeController {
         }
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable int id){
+    public ResponseEntity<?> getEmployeeById(@PathVariable int id){
         try{
             DaoEmployees dao =DaoEmployees.getInstance();
             Employee employee = dao.findById(id);
             if (employee==null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
             }
             return ResponseEntity.ok(employee);
 
         }
         catch (SQLException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace(); // TODO: replace with Logger
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database operation failed");
         }
     }
     @PostMapping
