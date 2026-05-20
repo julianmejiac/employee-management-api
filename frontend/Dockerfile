@@ -1,4 +1,5 @@
-FROM ubuntu:latest
-LABEL authors="julia"
+FROM nginx:alpine
 
-ENTRYPOINT ["top", "-b"]
+COPY . /usr/share/nginx/html
+
+EXPOSE 80
