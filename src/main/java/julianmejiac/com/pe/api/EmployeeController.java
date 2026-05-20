@@ -10,10 +10,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
+    private final DaoEmployees dao;
+
+    public EmployeeController(DaoEmployees dao) {
+        this.dao = dao;
+    }
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees(){
         try{
-            DaoEmployees dao =DaoEmployees.getInstance();
             List<Employee> employees=dao.findAll();
             return ResponseEntity.ok(employees);
         } catch (SQLException e) {
@@ -23,7 +27,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable int id){
         try{
-            DaoEmployees dao =DaoEmployees.getInstance();
+
             Employee employee = dao.findById(id);
             if (employee==null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
@@ -55,7 +59,7 @@ public class EmployeeController {
             if (employee.getSalary()>=1000000){
                 return ResponseEntity.badRequest().body("Salary is too high");
             }
-            DaoEmployees dao = DaoEmployees.getInstance();
+
             Employee createdEmployee = dao.insert(employee);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
         } catch (SQLException e) {
@@ -67,7 +71,7 @@ public class EmployeeController {
     @PutMapping("/{id}/salary")
     public ResponseEntity<?> updateSalary(@PathVariable int id, @RequestBody Map<String,Float> body){
         try{
-            DaoEmployees dao=DaoEmployees.getInstance();
+
             Employee employee=dao.findById(id);
             if (employee==null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found");
@@ -89,7 +93,7 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable int id){
         try{
-            DaoEmployees dao= DaoEmployees.getInstance();
+
             boolean deleted=dao.deleteById(id);
             if(!deleted){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee id not found");

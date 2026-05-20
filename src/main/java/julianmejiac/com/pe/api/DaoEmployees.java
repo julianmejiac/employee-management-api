@@ -1,25 +1,20 @@
 package julianmejiac.com.pe.api;
 
+import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Repository
 public class DaoEmployees {
-	//properties and methods
-	private Connection con =null;
-	private static DaoEmployees instance=null;
-	private DaoEmployees()throws SQLException{
-		con =DBConnection.getConnection();
-		
-	}
-	public static DaoEmployees getInstance() throws SQLException{
-		if (instance==null) {
-			instance=new DaoEmployees();
-					}
-		return instance;
+	//Connection
+	private final DBConnection dbConnection;
+	public DaoEmployees(DBConnection dbConnection){
+		this.dbConnection=dbConnection;
 	}
 	//own methods from DAO class
 	public Employee insert(Employee e) throws SQLException{
+		Connection con = dbConnection.getConnection();
 		PreparedStatement ps=con.prepareStatement(
 				"INSERT INTO empleado (nombre,apellido, fechaNacimiento,sueldo)"
 				+"VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -40,6 +35,7 @@ public class DaoEmployees {
 	}
 	//metodo que trae todos los empleados
 	public List<Employee> findAll() throws SQLException {
+		Connection con = dbConnection.getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM empleado");
 		ResultSet rs = ps.executeQuery();
 
@@ -62,6 +58,7 @@ public class DaoEmployees {
 
 	//imethod that gives an employee by ID
 	public Employee findById(int id) throws SQLException{
+		Connection con = dbConnection.getConnection();
 		PreparedStatement ps=con.prepareStatement("SELECT * FROM empleado WHERE id=?");
 		ps.setInt(1, id);
 		ResultSet rs=ps.executeQuery();
@@ -80,6 +77,7 @@ public class DaoEmployees {
 	
 	// method that updates and employee
 	public void editSalary(Employee e, Float newSalary) throws SQLException{
+		Connection con = dbConnection.getConnection();
 		PreparedStatement ps=con.prepareStatement("UPDATE empleado SET sueldo = ? WHERE id = ?");
 				ps.setFloat(1, newSalary);
 				ps.setInt(2, e.getId());
@@ -91,7 +89,7 @@ public class DaoEmployees {
     public boolean deleteById(int id) throws SQLException {
  
         String sql = "DELETE FROM empleado WHERE id = ?";
- 
+		Connection con = dbConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement(sql)) {
  
             ps.setInt(1, id);
@@ -106,7 +104,7 @@ public class DaoEmployees {
     public int deleteAll() throws SQLException {
  
         String sql = "DELETE FROM empleado";
- 
+		Connection con = dbConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement(sql)) {
  
             return ps.executeUpdate();
