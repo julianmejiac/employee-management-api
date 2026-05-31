@@ -8,11 +8,11 @@
 		<version>4.0.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>cibertec.edu.pe</groupId>
-	<artifactId>Semana14</artifactId>
+	<groupId>julianmejiac.com.pe</groupId>
+	<artifactId>employee-management-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Semana14</name>
-	<description>Semana14</description>
+	<name>Employee Management API</name>
+	<description>Employee Management API </description>
 	<url/>
 	<licenses>
 		<license/>
