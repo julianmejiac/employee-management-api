@@ -35,70 +35,89 @@ public class DaoEmployees {
 	}
 	//method that retrieves all employees
 	public List<Employee> findAll() throws SQLException {
+		String sql="SELECT * FROM employees";
+		try(
 		Connection con = dbConnection.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM employees");
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = con.prepareStatement(sql)) {
+			try (ResultSet rs = ps.executeQuery()) {
 
-		List<Employee> result = new ArrayList<>();
+				List<Employee> result = new ArrayList<>();
 
-		while (rs.next()) {
-			result.add(new Employee(
-					rs.getInt("id"),
-					rs.getString("first_name"),
-					rs.getString("last_name"),
-					rs.getDate("date_of_birth").toLocalDate(),
-					rs.getFloat("salary")));
+				while (rs.next()) {
+					result.add(new Employee(
+							rs.getInt("id"),
+							rs.getString("first_name"),
+							rs.getString("last_name"),
+							rs.getDate("date_of_birth").toLocalDate(),
+							rs.getFloat("salary")));
+				}
+				return result;
+			}
 		}
 
-		rs.close();
-		ps.close();
 
-		return result;
 	}
 
 	//method that retrieves an employee by ID
-	public Employee findById(int id) throws SQLException{
-		Connection con = dbConnection.getConnection();
-		PreparedStatement ps=con.prepareStatement("SELECT * FROM employees WHERE id=?");
-		ps.setInt(1, id);
-		ResultSet rs=ps.executeQuery();
-		Employee emp = null;
+	public Employee findById(int id) throws SQLException {
 
-	    if (rs.next()) {
-	    	emp=new Employee(rs.getInt("id"),rs.getString("first_name"), rs.getString("last_name"),rs.getDate("date_of_birth").toLocalDate(),rs.getFloat("salary"));
+		String sql = "SELECT * FROM employees WHERE id=?";
+
+		try (
+				Connection con = dbConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql)
+		) {
+
+			ps.setInt(1, id);
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				if (rs.next()) {
+					return new Employee(
+							rs.getInt("id"),
+							rs.getString("first_name"),
+							rs.getString("last_name"),
+							rs.getDate("date_of_birth").toLocalDate(),
+							rs.getFloat("salary")
+					);
+				}
+
+				return null;
+			}
 		}
-	    
-
-	    rs.close();
-	    ps.close();
-
-	    return emp;
 	}
-	
-	// method that updates and employee
-	public void editSalary(Employee e, Float newSalary) throws SQLException{
-		Connection con = dbConnection.getConnection();
-		PreparedStatement ps=con.prepareStatement("UPDATE employees SET salary = ? WHERE id = ?");
-				ps.setFloat(1, newSalary);
-				ps.setInt(2, e.getId());
-				ps.executeUpdate();
-				ps.close();
-									
+
+	// method that updates an employee's salary
+	public void editSalary(Employee e, Float newSalary) throws SQLException {
+
+		String sql = "UPDATE employees SET salary = ? WHERE id = ?";
+
+		try (
+				Connection con = dbConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql)
+		) {
+			ps.setFloat(1, newSalary);
+			ps.setInt(2, e.getId());
+
+			ps.executeUpdate();
+		}
 	}
 	// delete by id
-    public boolean deleteById(int id) throws SQLException {
- 
-        String sql = "DELETE FROM employees WHERE id = ?";
-		Connection con = dbConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
- 
-            ps.setInt(1, id);
- 
-            int affectedRows= ps.executeUpdate();
- 
-            return affectedRows > 0;
-        }
-    }
+	public boolean deleteById(int id) throws SQLException {
+
+		String sql = "DELETE FROM employees WHERE id = ?";
+
+		try (
+				Connection con = dbConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql)
+		) {
+			ps.setInt(1, id);
+
+			int affectedRows = ps.executeUpdate();
+
+			return affectedRows > 0;
+		}
+	}
     
     // delete all employees
     public int deleteAll() throws SQLException {
