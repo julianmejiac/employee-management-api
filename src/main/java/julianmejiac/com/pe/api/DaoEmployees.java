@@ -16,7 +16,7 @@ public class DaoEmployees {
 	public Employee insert(Employee e) throws SQLException{
 		Connection con = dbConnection.getConnection();
 		PreparedStatement ps=con.prepareStatement(
-				"INSERT INTO empleado (nombre,apellido, fechaNacimiento,sueldo)"
+				"INSERT INTO employees (first_name,last_name, date_of_birth,salary)"
 				+"VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, e.getName());
 				ps.setString(2, e.getLastname());
@@ -33,10 +33,10 @@ public class DaoEmployees {
 							
 				
 	}
-	//metodo que trae todos los empleados
+	//method that retrieves all employees
 	public List<Employee> findAll() throws SQLException {
 		Connection con = dbConnection.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM empleado");
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM employees");
 		ResultSet rs = ps.executeQuery();
 
 		List<Employee> result = new ArrayList<>();
@@ -44,10 +44,10 @@ public class DaoEmployees {
 		while (rs.next()) {
 			result.add(new Employee(
 					rs.getInt("id"),
-					rs.getString("nombre"),
-					rs.getString("apellido"),
-					rs.getDate("fechaNacimiento").toLocalDate(),
-					rs.getFloat("sueldo")));
+					rs.getString("first_name"),
+					rs.getString("last_name"),
+					rs.getDate("date_of_birth").toLocalDate(),
+					rs.getFloat("salary")));
 		}
 
 		rs.close();
@@ -56,16 +56,16 @@ public class DaoEmployees {
 		return result;
 	}
 
-	//imethod that gives an employee by ID
+	//method that retrieves an employee by ID
 	public Employee findById(int id) throws SQLException{
 		Connection con = dbConnection.getConnection();
-		PreparedStatement ps=con.prepareStatement("SELECT * FROM empleado WHERE id=?");
+		PreparedStatement ps=con.prepareStatement("SELECT * FROM employees WHERE id=?");
 		ps.setInt(1, id);
 		ResultSet rs=ps.executeQuery();
 		Employee emp = null;
 
 	    if (rs.next()) {
-	    	emp=new Employee(rs.getInt("id"),rs.getString("nombre"), rs.getString("apellido"),rs.getDate("fechaNacimiento").toLocalDate(),rs.getFloat("sueldo"));
+	    	emp=new Employee(rs.getInt("id"),rs.getString("first_name"), rs.getString("last_name"),rs.getDate("date_of_birth").toLocalDate(),rs.getFloat("salary"));
 		}
 	    
 
@@ -78,7 +78,7 @@ public class DaoEmployees {
 	// method that updates and employee
 	public void editSalary(Employee e, Float newSalary) throws SQLException{
 		Connection con = dbConnection.getConnection();
-		PreparedStatement ps=con.prepareStatement("UPDATE empleado SET sueldo = ? WHERE id = ?");
+		PreparedStatement ps=con.prepareStatement("UPDATE employees SET salary = ? WHERE id = ?");
 				ps.setFloat(1, newSalary);
 				ps.setInt(2, e.getId());
 				ps.executeUpdate();
@@ -88,7 +88,7 @@ public class DaoEmployees {
 	// delete by id
     public boolean deleteById(int id) throws SQLException {
  
-        String sql = "DELETE FROM empleado WHERE id = ?";
+        String sql = "DELETE FROM employees WHERE id = ?";
 		Connection con = dbConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement(sql)) {
  
@@ -103,7 +103,7 @@ public class DaoEmployees {
     // delete all employees
     public int deleteAll() throws SQLException {
  
-        String sql = "DELETE FROM empleado";
+        String sql = "DELETE FROM employees";
 		Connection con = dbConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement(sql)) {
  

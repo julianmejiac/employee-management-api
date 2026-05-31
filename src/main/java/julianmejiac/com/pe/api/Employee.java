@@ -73,10 +73,10 @@ public class Employee {
 	@Override
 	public String toString() {
 		return "ID: " + id
-        + " | Nombre: " + name
-        + " | Apellido: " + lastname
-        + " | Nacimiento: " + dob
-        + " | Sueldo: S/ " + salary;
+        + " | First Name: " + name
+        + " | Last Name: " + lastname
+        + " | Date of Birth: " + dob
+        + " | Salary: $ " + salary;
 	}
 	
 	
