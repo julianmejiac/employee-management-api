@@ -105,7 +105,7 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
         return;
     }
 
-    const response = await fetch(`${API_URL}/${id}`);
+    const response = await fetch(`${API_URL}/id/${id}`);
 
     if (response.status === 404) {
         alert("Employee not found.");
@@ -137,7 +137,7 @@ document.getElementById("salaryForm").addEventListener("submit", async function(
         return;
     }
 
-    const updatedEmployeeResponse = await fetch(`${API_URL}/${id}`);
+    const updatedEmployeeResponse = await fetch(`${API_URL}/id/${id}`);
     const updatedEmployee = await updatedEmployeeResponse.json();
 
     document.getElementById("salaryForm").reset();
@@ -169,7 +169,7 @@ document.getElementById("deleteForm").addEventListener("submit", async function(
         return;
     }
 
-    const response = await fetch(`${API_URL}/${id}`);
+    const response = await fetch(`${API_URL}/id/${id}`);
 
     if (response.status === 404) {
         alert("Employee not found.");
@@ -207,7 +207,7 @@ document.getElementById("deleteForm").addEventListener("submit", async function(
 
     document.getElementById("deleteForm").reset();
 });
-
+//Find Employee by Id
 async function findEmployeeById() {
     const id = document.getElementById("searchId").value;
 
@@ -216,7 +216,7 @@ async function findEmployeeById() {
         return;
     }
 
-    const response = await fetch(`${API_URL}/${id}`);
+    const response = await fetch(`${API_URL}/id/${id}`);
 
     if (response.status === 404) {
         alert("Employee not found.");
@@ -245,7 +245,38 @@ async function findEmployeeById() {
 
     table.appendChild(row);
 }
+//Find Employee by Name
+async function findEmployeeByName(){
+    const name=document.getElementById("searchName").value;
+    if(!name){
+        alert("Please enter a name to search");
+        return;
+    }
+    const response=await fetch(`${API_URL}/name/${name}`);
+    if (response.status===404){
+        alert("There are no Employees with that name");
+        return;
+    }
+    if (!response.ok){
+        alert("Could not retrieve employees. Status:"+response.status);
+        return;
+    }
+    const employees =await response.json();
+    const table=document.getElementById("employeesTable");
+    table.innerHTML="";
+    employees.forEach(employee=>{
+    const row=document.createElement("tr");
+    row.innerHTML=`<td>${employee.id}</td>
+    <td>${employee.name}</td>
+    <td>${employee.lastname}</td>
+    <td>${employee.dob}</td>
+    <td>${employee.salary}</td>`   ;
 
+    table.appendChild(row);
+
+    });
+
+}
 function clearTable() {
     const table = document.getElementById("employeesTable");
     table.innerHTML = "";

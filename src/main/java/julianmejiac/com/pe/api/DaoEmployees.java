@@ -86,6 +86,35 @@ public class DaoEmployees {
 			}
 		}
 	}
+	//method to find employees by name
+	public List<Employee> findByFirstName(String name) throws SQLException{
+		String sql="SELECT * FROM employees WHERE first_name=?";
+		try(
+				Connection con= dbConnection.getConnection();
+				PreparedStatement ps=con.prepareStatement(sql)
+		){
+			ps.setString(1, name);
+			try(ResultSet rs=ps.executeQuery()){
+				List<Employee> result=new ArrayList<>();
+				while (rs.next()){
+					result.add(new Employee(
+							rs.getInt("id"),
+							rs.getString("first_name"),
+							rs.getString("last_name"),
+							rs.getDate("date_of_birth").toLocalDate(),
+							rs.getFloat("salary")
+
+					));
+
+
+				}
+				return 	result;
+
+			}
+
+		}
+	}
+
 
 	// method that updates an employee's salary
 	public void editSalary(Employee e, Float newSalary) throws SQLException {

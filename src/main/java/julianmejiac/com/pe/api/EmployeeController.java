@@ -24,7 +24,7 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable int id){
         try{
 
@@ -37,6 +37,21 @@ public class EmployeeController {
         }
         catch (SQLException e){
             e.printStackTrace(); // TODO: replace with Logger
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database operation failed");
+        }
+    }
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> getEmployeeByName(@PathVariable String name){
+        try{
+            List<Employee> employees=dao.findByFirstName(name);
+            if (employees==null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee with that name not found");
+            }
+            return ResponseEntity.ok(employees);
+
+        }
+        catch (SQLException e){
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database operation failed");
         }
     }
